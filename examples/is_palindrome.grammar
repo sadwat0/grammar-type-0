@@ -1,0 +1,75 @@
+#
+#   Input looks like:
+#   /S1000111/
+#
+#   Output should be:
+#   /F/
+#
+#
+#   Input looks like:
+#   /S1100011/
+#
+#   Output should be:
+#   /T/
+#
+
+divider = none
+
+#
+# State A means that first character was 0, and we need to move right and check that 
+# the rightmost character is 0.
+#
+
+S0 -> A
+A1 -> 1A
+A0 -> 0A
+
+# State B works as A, but for 1
+S1 -> B
+B1 -> 1B
+B0 -> 0B
+
+# Found wrong rightmost character
+1A/ -> F/
+0B/ -> F/
+
+# Correct character, moving left
+0A/ -> L/
+1B/ -> L/
+0L -> L0
+1L -> L1
+/L -> /S
+
+# End cases
+/A/ -> /T/
+/B/ -> /T/
+/S/ -> /T/
+
+
+# Example 1:
+# /S1001/ -> /B001/ (S1 -> B)
+# /B001/ -> /0B01/ (B0 -> 0B)
+# /0B01/ -> /00B1/ (B0 -> 0B)
+# /00B1/ -> /001B/ (B1 -> 1B)
+# /001B/ -> /00L/ (1B/ -> L/)
+# /00L/ -> /0L0/ (0L -> L0)
+# /0L0/ -> /L00/ (0L -> L0)
+# /L00/ -> /S00/ (/L -> /S)
+# /S00/ -> /A0/ (S0 -> A)
+# /A0/ -> /0A/ (A0 -> 0A)
+# /0A/ -> /L/ (0A/ -> L/)
+# /L/ -> /S/ (/L -> /S)
+# /S/ -> /T/ (/S/ -> /T/)
+
+# Example 2:
+# /S1101/ -> /B101/ (S1 -> B)
+# /B101/ -> /1B01/ (B1 -> 1B)
+# /1B01/ -> /10B1/ (B0 -> 0B)
+# /10B1/ -> /101B/ (B1 -> 1B)
+# /101B/ -> /10L/ (1B/ -> L/)
+# /10L/ -> /1L0/ (0L -> L0)
+# /1L0/ -> /L10/ (1L -> L1)
+# /L10/ -> /S10/ (/L -> /S)
+# /S10/ -> /B0/ (S1 -> B)
+# /B0/ -> /0B/ (B0 -> 0B)
+# /0B/ -> /F/ (0B/ -> F/)
