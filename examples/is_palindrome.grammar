@@ -45,6 +45,17 @@ B0 -> 0B
 /B/ -> /T/
 /S/ -> /T/
 
+# Clear remained chars
+0F -> F
+F0 -> F
+1F -> F
+F1 -> F
+
+0T -> T
+T0 -> T
+1T -> T
+T1 -> T
+
 
 # Example 1:
 # /S1001/ -> /B001/ (S1 -> B)
