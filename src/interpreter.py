@@ -78,6 +78,7 @@ class BaseInterpreter:
         self.is_ended = False
 
     def end(self) -> None:
+        """Changes state to ended, so make_step() will fail"""
         self.is_ended = True
 
     def make_step(self) -> Sequence | None:
@@ -132,6 +133,8 @@ class BaseInterpreter:
 
 
 class Interpreter(BaseInterpreter):
+    """Works same as BaseInterpreter, but adds verbose option"""
+
     def __init__(
         self,
         rules: list[Rule] = None,
@@ -169,7 +172,9 @@ class Interpreter(BaseInterpreter):
     def run(self):
         """Makes steps until can and limit not reached"""
 
-        logger.info(f"run started with {state_to_string(self.state, self.divider)}")
+        if self.verbose:
+            logger.info(f"run started with {state_to_string(self.state, self.divider)}")
+
         begin_steps_count = self.steps_count
 
         while not self.is_ended:

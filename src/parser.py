@@ -31,24 +31,29 @@ class Parser:
                 tokens = s.split("=")
 
                 if len(tokens) != 2:
-                    logger.error(
-                        "wrong divider format (or using reserved divider string)"
-                    )
+                    if self.verbose:
+                        logger.error(
+                            "wrong divider format (or using reserved divider string)"
+                        )
                     return False
 
                 divider_type = tokens[-1].strip()
                 # check if divider_type is correct
                 if divider_type not in constants.ALLOWED_DIVIDERS:
-                    logger.error(
-                        f"unknown divider type '{divider_type}', "
-                        f"allowed: {constants.ALLOWED_DIVIDERS}"
-                    )
+                    if self.verbose:
+                        logger.error(
+                            f"unknown divider type '{divider_type}', "
+                            f"allowed: {constants.ALLOWED_DIVIDERS}"
+                        )
+
                     return False
 
                 new_divider = constants.DIVIDER_TO_ENUM[divider_type]
                 # check if self.divider is already set to different divider
                 if self.divider is not Dividers.NOT_SET and self.divider != new_divider:
-                    logger.error("different dividers found in code")
+                    if self.verbose:
+                        logger.error("different dividers found in code")
+
                     return False
 
                 # updating divider
@@ -58,7 +63,8 @@ class Parser:
         if self.divider is Dividers.NOT_SET:
             self.divider = Dividers.NONE
 
-        logger.info(f"divider set to {self.divider}")
+        if self.verbose:
+            logger.info(f"divider set to {self.divider}")
 
         return True
 
@@ -73,7 +79,8 @@ class Parser:
         """
 
         if self.divider is Dividers.NOT_SET:
-            logger.error("call of parse_rules() while divider is not set")
+            if self.verbose:
+                logger.error("call of parse_rules() while divider is not set")
             raise RuntimeError("call of parse_rules() while divider is not set")
 
         found_rules: list[Rule] = []
@@ -81,7 +88,8 @@ class Parser:
             if not s.startswith("divider"):
                 rule_splitted = s.split("->")
                 if len(rule_splitted) != 2:
-                    logger.error(f"found wrong line in code: '{s}'")
+                    if self.verbose:
+                        logger.error(f"found wrong line in code: '{s}'")
                     return False
 
                 original_s = rule_splitted[0]
@@ -106,7 +114,8 @@ class Parser:
                 found_rules.append(Rule(original, replace))
 
         self.rules = found_rules
-        logger.info(f"found {len(found_rules)} rules")
+        if self.verbose:
+            logger.info(f"found {len(found_rules)} rules")
 
         return True
 
@@ -143,7 +152,8 @@ class Parser:
         if not rules_parse_result:
             return False
 
-        logger.success(f"parsed {len(self.rules)} rules")
+        if self.verbose:
+            logger.success(f"parsed {len(self.rules)} rules")
 
         return True
 
@@ -161,4 +171,5 @@ class Parser:
             return self.update_from_strings(f.readlines())
 
     def get_rules(self) -> list[Rule]:
+        """Returns list of parsed rules"""
         return copy.deepcopy(self.rules)
