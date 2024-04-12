@@ -150,14 +150,15 @@ class Interpreter(BaseInterpreter):
 
     def make_step(self) -> str | None:
         old_state = self.state
+        if self.is_ended:
+            logger.warning("called make_step() on ended state")
+            return
+
         result = super().make_step()
 
         if result is None:
-            if self.verbose:
-                if self.is_ended:
-                    logger.warning("called make_step() on ended state")
-                else:
-                    logger.error("wrong call of make_step()")
+            if not self.is_ended and self.verbose:
+                logger.error("wrong call of make_step()")
 
             return None
 
