@@ -6,9 +6,9 @@ import enum
 class Dividers(enum.Enum):
     """Enum for divider types"""
 
-    NOT_SET = "not set"
-    NONE = ""
-    SPACES = " "
+    NOT_SET = 0
+    NONE = 1
+    SPACES = 2
 
 
 LOGGER_FORMAT = "<level>{level: <8}</level> | <level>{message}</level>"

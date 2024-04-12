@@ -54,3 +54,11 @@ class Rule:
             state[:position] + self.replacement + state[position + len(self.original) :]
         )
         return new_state
+
+    def __eq__(self, other):
+        if isinstance(other, Rule):
+            return (
+                self.original == other.original
+                and self.replacement == other.replacement
+            )
+        return False

@@ -15,9 +15,12 @@ class BaseInterpreter:
         self,
         rules: list[Rule] = None,
         state: Sequence = None,
-        divider: Dividers = None,
+        divider: Dividers = Dividers.NONE,
     ):
         self.rules: list[Rule] = rules
+        if self.rules is None:
+            self.rules = []
+
         self.divider: Dividers = divider
         self.state: Sequence = state
 
@@ -54,18 +57,20 @@ class BaseInterpreter:
 
         self.is_ended = False
 
-    def set_state(self, state: list[str] | str) -> None:
+    def set_state(self, state: list[str] | str, verbose: bool = False) -> None:
         """Updates state. Erases old state.
 
         Args:
             state (list[str] | str): new state, string can be passed if divider is Dividers.NONE
+            verbose (bool, optional): verbose option. Defaults to False.
         """
 
         if isinstance(state, str) and self.divider is not Dividers.NONE:
-            logger.warning(
-                "divider is not set before settings state with str"
-                ", it would become Dividers.NONE"
-            )
+            if verbose:
+                logger.warning(
+                    "divider is not set before settings state with str"
+                    ", it would become Dividers.NONE"
+                )
 
             self.divider = Dividers.NONE
 
@@ -128,23 +133,32 @@ class BaseInterpreter:
 
 class Interpreter(BaseInterpreter):
     def __init__(
-        self, rules: list[Rule] = None, state: Sequence = None, verbose: bool = False
+        self,
+        rules: list[Rule] = None,
+        state: Sequence = None,
+        divider: Dividers = Dividers.NONE,
+        verbose: bool = False,
     ):
-        super().__init__(rules, state)
+        super().__init__(rules, state, divider)
         self.verbose = verbose
+
+    def set_state(self, state: list[str] | str, verbose: None = None) -> None:
+        return super().set_state(state, self.verbose)
 
     def make_step(self) -> str | None:
         old_state = self.state
         result = super().make_step()
 
         if result is None:
-            if self.is_ended:
-                if self.verbose:
+            if self.verbose:
+                if self.is_ended:
                     logger.warning("called make_step() on ended state")
-                return
+                else:
+                    logger.error("wrong call of make_step()")
 
-            logger.error("wrong call of make_step()")
-        else:
+            return None
+
+        if self.verbose:
             logger.info(
                 f"[{self.steps_count}] {state_to_string(old_state, self.divider)} -> "
                 f"{state_to_string(result, self.divider)}"
@@ -163,7 +177,8 @@ class Interpreter(BaseInterpreter):
             if result is None:
                 break
 
-        logger.success(
-            f"run ended in {self.steps_count - begin_steps_count} steps "
-            f"with {state_to_string(self.state, self.divider)}"
-        )
+        if self.verbose:
+            logger.success(
+                f"run ended in {self.steps_count - begin_steps_count} steps "
+                f"with {state_to_string(self.state, self.divider)}"
+            )
