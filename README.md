@@ -36,7 +36,7 @@ python main.py examples/double.grammar / S 1 1 1 /
 Чтобы запустить валидатор используйте:
 
 ```bash
-python main.py <путь к файлу с кодом программы> <путь к файлу валидатора> --count=[количество тестов] --verbose=[false | true]
+python validate.py <путь к файлу с кодом программы> <путь к файлу валидатора> --count=[количество тестов] --verbose=[false | true]
 ```
 
 Например:
