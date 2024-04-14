@@ -1,6 +1,6 @@
 # Грамматики класса 0
 
-![Coverage](./coverage.svg)
+<!-- ![Coverage](./coverage.svg) -->
 
 ## Установка
 
