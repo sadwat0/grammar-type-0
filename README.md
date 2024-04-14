@@ -26,6 +26,25 @@ python main.py examples/double.grammar /S111/
 python main.py examples/double.grammar / S 1 1 1 /
 ```
 
+## Валидация програм
+
+Вы можете реализовать корректное поведение программы на `python`.
+Оно обязано реализовывать функции `generate_input_state() -> list[str]` и `generate_answer(initial_state: list[str]) -> list[str]`.
+
+Примеры можно посмотреть в папке `validators`.
+
+Чтобы запустить валидатор используйте:
+
+```bash
+python main.py <путь к файлу с кодом программы> <путь к файлу валидатора> --count=[количество тестов] --verbose=[false | true]
+```
+
+Например:
+
+```bash
+python validate.py examples/increment.grammar validators/increment_validator.py -c=100 -v=false
+```
+
 ## Ограничения
 
 Будем считать, что в каждый момент может выполниться только одно из правил.
